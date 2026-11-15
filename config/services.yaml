@@ -1,0 +1,22 @@
+parameters:
+    # Hypothèse de conversion utilisée pour le tableau de bord : 1 repas = 0,5 kg de denrées
+    app.kg_par_repas: 0.5
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+
+    App\Service\ImpactCalculator:
+        arguments:
+            $kgParRepas: '%app.kg_par_repas%'
+
+    # Public pour pouvoir être récupéré directement dans les tests d'intégration
+    App\Service\LotManager:
+        public: true

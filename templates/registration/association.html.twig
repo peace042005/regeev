@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription association{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card"><div class="card-body">
+                <h1 class="h4 mb-3">Inscrire mon association</h1>
+                <p class="text-muted small">Votre compte sera vérifié par un administrateur avant votre première réservation.</p>
+                {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn btn-regeev w-100" type="submit">Créer mon compte</button>
+                {{ form_end(form) }}
+            </div></div>
+        </div>
+    </div>
+{% endblock %}

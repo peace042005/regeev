@@ -1,0 +1,20 @@
+# Base de données de développement : docker compose up -d
+services:
+  database:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: regeev
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "app", "-d", "regeev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  database_data:

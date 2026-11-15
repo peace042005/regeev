@@ -1,0 +1,90 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  qualite-et-tests:
+    name: Qualité et tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+          POSTGRES_DB: regeev_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U app -d regeev_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      APP_ENV: test
+      DATABASE_URL: postgresql://app:app@127.0.0.1:5432/regeev_test?serverVersion=16&charset=utf8
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: intl, pdo_pgsql, pdo_sqlite
+          coverage: none
+
+      - name: Valider composer.json
+        run: composer validate --no-check-publish
+
+      - name: Installer les dépendances
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Lint (YAML, Twig, conteneur de services)
+        run: |
+          php bin/console lint:yaml config
+          php bin/console lint:twig templates
+          php bin/console lint:container
+
+      - name: Analyse statique (PHPStan)
+        run: vendor/bin/phpstan analyse --no-progress
+
+      - name: Vérifier le mapping Doctrine
+        run: php bin/console doctrine:schema:validate --skip-sync
+
+      - name: Tests (PHPUnit sur PostgreSQL)
+        run: vendor/bin/phpunit
+
+  image-docker:
+    name: Construire l'image Docker
+    runs-on: ubuntu-latest
+    needs: qualite-et-tests
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: docker build -t regeev:${{ github.sha }} .
+
+  deploiement:
+    name: Déploiement
+    runs-on: ubuntu-latest
+    needs: image-docker
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Déclencher le déploiement chez l'hébergeur
+        env:
+          DEPLOY_HOOK_URL: ${{ secrets.DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK_URL" ]; then
+            echo "Secret DEPLOY_HOOK_URL absent : déploiement ignoré."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST "$DEPLOY_HOOK_URL"

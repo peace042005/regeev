@@ -1,0 +1,9 @@
+parameters:
+    level: 5
+    paths:
+        - src
+    ignoreErrors:
+        # Les identifiants sont attribués par Doctrine, pas par mon code
+        -
+            identifier: property.unusedType
+            path: src/Entity/*

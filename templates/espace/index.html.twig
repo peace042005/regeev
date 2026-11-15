@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon espace{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">Bonjour {{ app.user.nom }}</h1>
+
+    {% if commerce %}
+        <p class="text-muted">{{ commerce.adresse }}, {{ commerce.codePostal }} {{ commerce.ville }} · SIRET {{ commerce.siret }}</p>
+
+        <h2 class="h5 mt-4">Mes derniers lots</h2>
+        {% if lots is empty %}
+            <p>Vous n'avez pas encore publié de lot.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm bg-white align-middle">
+                    <thead><tr><th>Titre</th><th>Catégorie</th><th>Poids</th><th>Date limite</th><th>Statut</th></tr></thead>
+                    <tbody>
+                    {% for lot in lots %}
+                        <tr>
+                            <td>{{ lot.titre }}</td>
+                            <td>{{ lot.categorie }}</td>
+                            <td>{{ lot.poidsKg|number_format(1, ',', ' ') }} kg</td>
+                            <td>{{ lot.dateLimite|date('d/m/Y') }}</td>
+                            <td><span class="badge text-bg-secondary">{{ lot.statut }}</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% elseif association %}
+        <p class="text-muted">{{ association.adresse }}, {{ association.codePostal }} {{ association.ville }} · RNA {{ association.rna }}</p>
+
+        {% if not association.validated %}
+            <div class="alert alert-warning" role="alert">
+                Votre association est en attente de validation par un administrateur.
+            </div>
+        {% endif %}
+
+        <h2 class="h5 mt-4">Mes dernières réservations</h2>
+        {% if reservations is empty %}
+            <p>Vous n'avez pas encore de réservation.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-sm bg-white align-middle">
+                    <thead><tr><th>Lot</th><th>Commerce</th><th>Réservé le</th><th>Code de retrait</th><th>Statut</th></tr></thead>
+                    <tbody>
+                    {% for reservation in reservations %}
+                        <tr>
+                            <td>{{ reservation.lot.titre }}</td>
+                            <td>{{ reservation.lot.commerce.nom }}</td>
+                            <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
+                            <td><code>{{ reservation.codeRetrait }}</code></td>
+                            <td><span class="badge text-bg-secondary">{{ reservation.statut }}</span></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% else %}
+        <p>Bienvenue dans l'espace d'administration (à venir : validation des associations et modération).</p>
+    {% endif %}
+{% endblock %}

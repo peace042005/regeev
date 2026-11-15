@@ -1,0 +1,27 @@
+<div class="row g-3 text-center">
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="chiffre" data-test="total-kg">{{ stats.totalKg|number_format(0, ',', ' ') }}</div>
+            <div class="text-muted">kg de nourriture sauvés</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ stats.repas|number_format(0, ',', ' ') }}</div>
+            <div class="text-muted">repas équivalents*</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ stats.nbDons|number_format(0, ',', ' ') }}</div>
+            <div class="text-muted">dons récupérés</div>
+        </div></div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ stats.commercesActifs }}</div>
+            <div class="text-muted">commerces donateurs</div>
+        </div></div>
+    </div>
+</div>
+<p class="text-muted small mt-2">* Estimation : 1 repas = 500 g de denrées.</p>

@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notre impact{% endblock %}
+
+{% block body %}
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+        <h1 class="h3 mb-0">Tableau de bord d'impact</h1>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary btn-sm" href="{{ path('app_impact_export') }}">Exporter en CSV</a>
+            <a class="btn btn-outline-secondary btn-sm" href="{{ path('api_stats') }}">API JSON</a>
+        </div>
+    </div>
+
+    {{ include('_chiffres.html.twig') }}
+
+    <div class="row g-3 mt-1">
+        <div class="col-lg-8">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Kilos sauvés par mois</h2>
+                <canvas id="graphMois" height="120"></canvas>
+            </div></div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card h-100"><div class="card-body">
+                <h2 class="h6">Répartition par catégorie</h2>
+                <canvas id="graphCategories"></canvas>
+            </div></div>
+        </div>
+        <div class="col-12">
+            <div class="card"><div class="card-body">
+                <h2 class="h6">Villes les plus actives (kg)</h2>
+                <canvas id="graphVilles" height="70"></canvas>
+            </div></div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script>
+        const stats = {{ stats|json_encode|raw }};
+        const vert = '#1f7a4d';
+        const palette = ['#1f7a4d', '#f2a541', '#3a86c8', '#d1495b', '#7b6fb0', '#6c757d'];
+
+        new Chart(document.getElementById('graphMois'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.parMois),
+                datasets: [{ label: 'kg sauvés', data: Object.values(stats.parMois), backgroundColor: vert }]
+            },
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        new Chart(document.getElementById('graphCategories'), {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(stats.parCategorie),
+                datasets: [{ data: Object.values(stats.parCategorie), backgroundColor: palette }]
+            }
+        });
+
+        new Chart(document.getElementById('graphVilles'), {
+            type: 'bar',
+            data: {
+                labels: Object.keys(stats.parVille),
+                datasets: [{ label: 'kg sauvés', data: Object.values(stats.parVille), backgroundColor: '#3a86c8' }]
+            },
+            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+        });
+    </script>
+{% endblock %}

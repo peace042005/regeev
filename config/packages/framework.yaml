@@ -1,0 +1,59 @@
+framework:
+    secret: '%env(APP_SECRET)%'
+    http_method_override: false
+    handle_all_throwables: true
+    csrf_protection: true
+    session:
+        handler_id: null
+        cookie_secure: auto
+        cookie_samesite: lax
+    php_errors:
+        log: true
+    router:
+        utf8: true
+    validation:
+        email_validation_mode: html5
+    default_locale: fr
+
+    # Cycle de vie d'un lot d'invendus
+    workflows:
+        lot:
+            type: state_machine
+            marking_store:
+                type: method
+                property: statut
+            supports:
+                - App\Entity\Lot
+            initial_marking: brouillon
+            places:
+                - brouillon
+                - publie
+                - reserve
+                - recupere
+                - expire
+                - annule
+            transitions:
+                publier:
+                    from: brouillon
+                    to: publie
+                reserver:
+                    from: publie
+                    to: reserve
+                liberer:
+                    from: reserve
+                    to: publie
+                confirmer_retrait:
+                    from: reserve
+                    to: recupere
+                expirer:
+                    from: [publie, reserve]
+                    to: expire
+                annuler:
+                    from: [brouillon, publie, reserve]
+                    to: annule
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

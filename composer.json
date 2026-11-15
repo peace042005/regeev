@@ -1,0 +1,60 @@
+{
+    "name": "marcella-chanhoun/regeev",
+    "description": "ReGeev - plateforme de dons d'invendus alimentaires entre commerces et associations",
+    "type": "project",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=8.2",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-migrations-bundle": "^3.4",
+        "doctrine/orm": "^3.3",
+        "symfony/console": "7.4.*",
+        "symfony/dotenv": "7.4.*",
+        "symfony/form": "7.4.*",
+        "symfony/framework-bundle": "7.4.*",
+        "symfony/runtime": "7.4.*",
+        "symfony/security-bundle": "7.4.*",
+        "symfony/security-csrf": "7.4.*",
+        "symfony/twig-bundle": "7.4.*",
+        "symfony/validator": "7.4.*",
+        "symfony/workflow": "7.4.*",
+        "symfony/yaml": "7.4.*"
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.7 || ^4.0",
+        "fakerphp/faker": "^1.23",
+        "phpstan/phpstan": "^2.0",
+        "phpunit/phpunit": "^11.5",
+        "symfony/browser-kit": "7.4.*",
+        "symfony/css-selector": "7.4.*"
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "App\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "stan": "phpstan analyse",
+        "lint": [
+            "@php bin/console lint:yaml config",
+            "@php bin/console lint:twig templates",
+            "@php bin/console lint:container"
+        ]
+    }
+}

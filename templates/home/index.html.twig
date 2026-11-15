@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+    <section class="py-4 text-center">
+        <h1 class="display-5 fw-bold">Vos invendus nourrissent, ils ne se jettent pas.</h1>
+        <p class="lead text-muted col-lg-8 mx-auto">
+            ReGeev met en relation les commerces alimentaires qui ont des invendus
+            et les associations qui les redistribuent aux personnes qui en ont besoin.
+        </p>
+        <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <a class="btn btn-regeev btn-lg" href="{{ path('app_register_commerce') }}">Je donne mes invendus</a>
+            <a class="btn btn-outline-success btn-lg" href="{{ path('app_register_association') }}">Je suis une association</a>
+        </div>
+    </section>
+
+    <section class="py-4">
+        <h2 class="h4 mb-3">L'impact de la plateforme</h2>
+        {{ include('_chiffres.html.twig') }}
+        <a href="{{ path('app_impact') }}">Voir le tableau de bord complet →</a>
+    </section>
+
+    <section class="py-4">
+        <h2 class="h4 mb-3">Comment ça marche ?</h2>
+        <div class="row g-3">
+            <div class="col-md-4"><div class="card h-100"><div class="card-body">
+                <h3 class="h6">1. Le commerce publie un lot</h3>
+                <p class="mb-0 text-muted">Produits, quantité, date limite et créneau de retrait.</p>
+            </div></div></div>
+            <div class="col-md-4"><div class="card h-100"><div class="card-body">
+                <h3 class="h6">2. L'association réserve</h3>
+                <p class="mb-0 text-muted">Elle reçoit un code de retrait à présenter au commerce.</p>
+            </div></div></div>
+            <div class="col-md-4"><div class="card h-100"><div class="card-body">
+                <h3 class="h6">3. Le don est récupéré</h3>
+                <p class="mb-0 text-muted">Le commerce confirme le retrait : les kilos sauvés sont comptabilisés.</p>
+            </div></div></div>
+        </div>
+    </section>
+{% endblock %}
