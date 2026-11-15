@@ -8,7 +8,11 @@ des produits encore consommables alors que des associations en manquent.
 Avec ce projet, je parcours tout le cycle de développement d'un logiciel :
 analyse du besoin, conception, développement, tests, intégration continue et déploiement.
 
-> Projet en cours de développement. L'avancement est détaillé plus bas.
+**Démo en ligne : https://regeev.onrender.com**
+
+Le site est hébergé sur une offre gratuite : après une période sans visite, le premier affichage peut prendre
+jusqu'à une minute. Les comptes de démonstration sont indiqués plus bas, et les données fictives sont
+rechargées automatiquement pour rester récentes.
 
 ## Fonctionnalités
 
@@ -137,7 +141,7 @@ jusqu'à une minute.
 - [ ] Carte des lots
 - [ ] E-mails de notification
 - [x] Administration : validation et suspension des associations, vue d'ensemble, modération des lots
-- [ ] Mise en ligne (configuration prête : migrations, `render.yaml`, données de démonstration)
+- [x] Mise en ligne sur Render avec une base PostgreSQL Neon : https://regeev.onrender.com
 
 ## Ce que j'ai appris
 
