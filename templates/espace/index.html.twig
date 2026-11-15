@@ -75,6 +75,7 @@
             </div>
         {% endif %}
     {% else %}
-        <p>Bienvenue dans l'espace d'administration (à venir : validation des associations et modération).</p>
+        <p>Vous êtes connecté(e) en tant qu'administrateur.</p>
+        <a class="btn btn-regeev" href="{{ path('app_admin') }}">Ouvrir l'administration</a>
     {% endif %}
 {% endblock %}

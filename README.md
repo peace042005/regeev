@@ -18,6 +18,7 @@ analyse du besoin, conception, développement, tests, intégration continue et d
 - Espace commerce : création d'un lot en brouillon, modification, publication, annulation, confirmation du retrait avec le code.
 - Droits d'accès par Voter : un commerce ne gère que ses propres lots.
 - Espace association : lots disponibles filtrables par catégorie et par ville, réservation avec code de retrait, désistement.
+- Administration : validation et suspension des associations, compteurs de la plateforme, modération des lots.
 - Expiration automatique des lots périmés (`php bin/console app:lots:expirer`).
 - Tableau de bord d'impact public : kilos sauvés, repas équivalents, évolution par mois, répartition par catégorie et par ville.
 - Données d'impact disponibles en JSON (`/api/stats`) et en CSV (`/impact/export.csv`).
@@ -118,7 +119,7 @@ J'ai écrit trois niveaux de tests :
 - [x] Côté association : liste filtrable des lots disponibles, réservation avec code de retrait, désistement
 - [ ] Carte des lots
 - [ ] E-mails de notification
-- [ ] Administration (validation des associations)
+- [x] Administration : validation et suspension des associations, vue d'ensemble, modération des lots
 - [ ] Mise en ligne
 
 ## Ce que j'ai appris
