@@ -15,6 +15,8 @@ analyse du besoin, conception, développement, tests, intégration continue et d
 - Inscription d'un commerce (format du SIRET contrôlé) ou d'une association (numéro RNA).
 - Connexion sécurisée et espace personnel selon le rôle.
 - Cycle de vie d'un lot géré par une machine à états : brouillon, publié, réservé, récupéré, expiré, annulé.
+- Espace commerce : création d'un lot en brouillon, modification, publication, annulation, confirmation du retrait avec le code.
+- Droits d'accès par Voter : un commerce ne gère que ses propres lots.
 - Réservation avec code de retrait à présenter au commerce.
 - Expiration automatique des lots périmés (`php bin/console app:lots:expirer`).
 - Tableau de bord d'impact public : kilos sauvés, repas équivalents, évolution par mois, répartition par catégorie et par ville.
@@ -111,7 +113,8 @@ J'ai écrit trois niveaux de tests :
 - [x] Règles métier du cycle de vie d'un lot
 - [x] Tableau de bord d'impact (page, API JSON, export CSV)
 - [x] Tests automatisés et pipeline CI/CD
-- [ ] Gestion des lots côté commerce et géocodage des adresses
+- [x] Gestion des lots côté commerce : création, modification, publication, annulation, confirmation du retrait
+- [ ] Géocodage des adresses
 - [ ] Liste, carte et réservation côté association
 - [ ] E-mails de notification
 - [ ] Administration (validation des associations)

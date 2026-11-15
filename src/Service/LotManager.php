@@ -79,6 +79,22 @@ class LotManager
         $this->em->flush();
     }
 
+    /** Le commerce retire son lot : une éventuelle réservation en cours est annulée. */
+    public function annuler(Lot $lot): void
+    {
+        $this->appliquer($lot, 'annuler');
+
+        $reservations = $this->em->getRepository(Reservation::class)->findBy([
+            'lot' => $lot,
+            'statut' => Reservation::STATUT_ACTIVE,
+        ]);
+        foreach ($reservations as $reservation) {
+            $reservation->annuler();
+        }
+
+        $this->em->flush();
+    }
+
     /**
      * Passe en "expiré" tous les lots publiés ou réservés dont la date limite est dépassée.
      *

@@ -34,7 +34,7 @@ jobs:
       DATABASE_URL: postgresql://app:app@127.0.0.1:5432/regeev_test?serverVersion=16&charset=utf8
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Installer PHP
         uses: shivammathur/setup-php@v2
@@ -69,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: qualite-et-tests
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build
         run: docker build -t regeev:${{ github.sha }} .
 

@@ -56,7 +56,8 @@ class Lot
     private float $poidsKg = 1;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    #[Assert\NotNull]
+    #[Assert\NotNull(message: 'La date limite est obligatoire.')]
+    #[Assert\GreaterThanOrEqual('today', message: 'La date limite ne peut pas être dans le passé.')]
     private ?\DateTimeImmutable $dateLimite = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
