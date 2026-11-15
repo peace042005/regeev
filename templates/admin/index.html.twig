@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">Administration</h1>
+
+    <div class="row g-3 text-center mb-4">
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ enAttente|length }}</div>
+            <div class="text-muted">associations à valider</div>
+        </div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ validees|length }}</div>
+            <div class="text-muted">associations validées</div>
+        </div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ nbCommerces }}</div>
+            <div class="text-muted">commerces inscrits</div>
+        </div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body">
+            <div class="chiffre">{{ lotsParStatut.publie ?? 0 }}</div>
+            <div class="text-muted">lots en ligne</div>
+        </div></div></div>
+    </div>
+
+    <h2 class="h5">Associations en attente de validation</h2>
+    {% if enAttente is empty %}
+        <p class="text-muted">Aucune association en attente.</p>
+    {% else %}
+        <div class="table-responsive mb-4" data-test="en-attente">
+            <table class="table table-sm bg-white align-middle">
+                <thead><tr><th>Nom</th><th>RNA</th><th>Ville</th><th>Contact</th><th></th></tr></thead>
+                <tbody>
+                {% for association in enAttente %}
+                    <tr>
+                        <td>{{ association.nom }}</td>
+                        <td>{{ association.rna }}</td>
+                        <td>{{ association.codePostal }} {{ association.ville }}</td>
+                        <td>{{ association.user.email }}</td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('app_admin_association_validate', {id: association.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('association' ~ association.id) }}">
+                                <button class="btn btn-regeev btn-sm" type="submit">Valider</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <h2 class="h5">Associations validées</h2>
+    {% if validees is empty %}
+        <p class="text-muted">Aucune association validée pour le moment.</p>
+    {% else %}
+        <div class="table-responsive mb-4" data-test="validees">
+            <table class="table table-sm bg-white align-middle">
+                <thead><tr><th>Nom</th><th>RNA</th><th>Ville</th><th></th></tr></thead>
+                <tbody>
+                {% for association in validees %}
+                    <tr>
+                        <td>{{ association.nom }}</td>
+                        <td>{{ association.rna }}</td>
+                        <td>{{ association.codePostal }} {{ association.ville }}</td>
+                        <td class="text-end">
+                            <form method="post" action="{{ path('app_admin_association_suspend', {id: association.id}) }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('association' ~ association.id) }}">
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Suspendre</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    <h2 class="h5">Lots par statut</h2>
+    <p class="mb-4">
+        {% for statut in ['brouillon', 'publie', 'reserve', 'recupere', 'expire', 'annule'] %}
+            <span class="me-3">{{ include('_statut.html.twig', {statut: statut}) }} {{ lotsParStatut[statut] ?? 0 }}</span>
+        {% endfor %}
+    </p>
+
+    <h2 class="h5">Derniers lots créés</h2>
+    {% if derniersLots is empty %}
+        <p class="text-muted">Aucun lot pour le moment.</p>
+    {% else %}
+        <div class="table-responsive">
+            <table class="table table-sm bg-white align-middle">
+                <thead><tr><th>Titre</th><th>Commerce</th><th>Ville</th><th>Date limite</th><th>Statut</th><th></th></tr></thead>
+                <tbody>
+                {% for lot in derniersLots %}
+                    <tr>
+                        <td>{{ lot.titre }}</td>
+                        <td>{{ lot.commerce.nom }}</td>
+                        <td>{{ lot.commerce.ville }}</td>
+                        <td>{{ lot.dateLimite|date('d/m/Y') }}</td>
+                        <td>{{ include('_statut.html.twig', {statut: lot.statut}) }}</td>
+                        <td class="text-end">
+                            {% if lot.statut in ['brouillon', 'publie', 'reserve'] %}
+                                <form method="post" action="{{ path('app_admin_lot_cancel', {id: lot.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('admin-lot' ~ lot.id) }}">
+                                    <button class="btn btn-outline-danger btn-sm" type="submit">Annuler ce lot</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
