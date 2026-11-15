@@ -47,8 +47,7 @@ composer install
 # Base de données PostgreSQL
 docker compose up -d
 
-# Création du schéma
-php bin/console doctrine:migrations:diff
+# Création des tables à partir des migrations
 php bin/console doctrine:migrations:migrate
 
 # Données de démonstration (6 mois d'activité fictive)
@@ -65,6 +64,9 @@ Sans Docker, je peux utiliser SQLite en créant un fichier `.env.local` :
 ```
 DATABASE_URL="sqlite:///%kernel.project_dir%/var/data.db"
 ```
+
+Les migrations sont écrites pour PostgreSQL : avec SQLite, je crée les tables avec
+`php bin/console doctrine:schema:create` à la place de `doctrine:migrations:migrate`.
 
 ### Comptes de démonstration
 
@@ -101,6 +103,21 @@ J'ai écrit trois niveaux de tests :
 5. construit l'image Docker ;
 6. sur la branche `main`, déclenche le déploiement chez l'hébergeur.
 
+## Mise en production
+
+L'application est conteneurisée (`Dockerfile`) et décrite pour l'hébergeur dans `render.yaml`.
+
+- **Application** : Render (service web Docker, région Francfort).
+- **Base de données** : PostgreSQL chez Neon.
+- **Au démarrage du conteneur** (`docker/entrypoint.sh`) : application des migrations, préparation du cache,
+  chargement des données de démonstration si elles sont absentes ou trop anciennes, expiration des lots périmés.
+- **Secrets** : `APP_SECRET` et `DATABASE_URL` sont des variables d'environnement de l'hébergeur, jamais versionnées.
+- **Déploiement continu** : le pipeline appelle le « deploy hook » de Render (secret GitHub `DEPLOY_HOOK_URL`)
+  uniquement quand les tests et la construction de l'image ont réussi sur `main`.
+
+L'offre gratuite met le service en veille après une période sans visite : le premier affichage peut prendre
+jusqu'à une minute.
+
 ## Documentation
 
 - [Cahier des charges](docs/cahier-des-charges.md)
@@ -120,7 +137,7 @@ J'ai écrit trois niveaux de tests :
 - [ ] Carte des lots
 - [ ] E-mails de notification
 - [x] Administration : validation et suspension des associations, vue d'ensemble, modération des lots
-- [ ] Mise en ligne
+- [ ] Mise en ligne (configuration prête : migrations, `render.yaml`, données de démonstration)
 
 ## Ce que j'ai appris
 

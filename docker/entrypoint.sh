@@ -12,6 +12,14 @@ php bin/console doctrine:migrations:migrate --no-interaction --allow-no-migratio
 
 php bin/console cache:clear --no-warmup
 php bin/console cache:warmup
+
+# Site de démonstration : données fictives toujours récentes
+if [ "$LOAD_DEMO_DATA" = "1" ]; then
+    php bin/console app:demo:charger --no-interaction
+fi
+
+# Les lots dont la date limite est dépassée sortent du catalogue
+php bin/console app:lots:expirer
 chown -R www-data:www-data var
 
 exec "$@"

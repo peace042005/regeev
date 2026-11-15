@@ -14,6 +14,9 @@ framework:
     validation:
         email_validation_mode: html5
     default_locale: fr
+    # En production l'application est derrière le proxy HTTPS de l'hébergeur
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port']
 
     # Cycle de vie d'un lot d'invendus
     workflows:

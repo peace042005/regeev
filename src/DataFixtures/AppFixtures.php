@@ -48,6 +48,8 @@ class AppFixtures extends Fixture
         'Plats préparés' => ['Plats du jour non vendus', 'Sandwichs et salades', 'Quiches et tartes salées'],
     ];
 
+    private ?string $motDePasseHache = null;
+
     public function __construct(
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly CodeRetraitGenerator $codeGenerator,
@@ -113,7 +115,10 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 180; ++$i) {
             $nomCategorie = $faker->randomElement(array_keys(self::CATEGORIES));
-            $creation = \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months', 'now'));
+            // Les 12 premiers lots sont tout récents : la démo propose toujours des lots à réserver
+            $creation = $i < 12
+                ? new \DateTimeImmutable(sprintf('-%d hours', $faker->numberBetween(1, 20)))
+                : \DateTimeImmutable::createFromMutable($faker->dateTimeBetween('-6 months', '-2 days'));
             $dateLimite = $creation->modify(sprintf('+%d days', $faker->numberBetween(1, 4)))->setTime(0, 0);
             $poids = $faker->randomFloat(1, 1, 25);
 
@@ -194,7 +199,9 @@ class AppFixtures extends Fixture
     private function creerUser(string $email, string $nom, string $role): User
     {
         $user = (new User())->setEmail($email)->setNom($nom)->setRoles([$role]);
-        $user->setPassword($this->passwordHasher->hashPassword($user, self::MOT_DE_PASSE));
+        // Tous les comptes de démo ont le même mot de passe : je ne le hache qu'une fois
+        $this->motDePasseHache ??= $this->passwordHasher->hashPassword($user, self::MOT_DE_PASSE);
+        $user->setPassword($this->motDePasseHache);
 
         return $user;
     }
