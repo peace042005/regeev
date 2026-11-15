@@ -27,6 +27,12 @@ class ChargerDemoCommandTest extends KernelTestCase
         $this->commande = new CommandTester($application->find('app:demo:charger'));
     }
 
+    /** Texte affiché par la commande, sans les retours à la ligne ajoutés par la console. */
+    private function affichage(): string
+    {
+        return (string) preg_replace('/\s+/', ' ', $this->commande->getDisplay());
+    }
+
     private function compter(string $entite): int
     {
         return $this->em()->getRepository($entite)->count([]);
@@ -55,7 +61,7 @@ class ChargerDemoCommandTest extends KernelTestCase
 
         $this->commande->execute([]);
         $this->commande->assertCommandIsSuccessful();
-        self::assertStringContainsString('rien à faire', $this->commande->getDisplay());
+        self::assertStringContainsString('rien à faire', $this->affichage());
 
         $this->em()->clear();
         $admin = $this->em()->getRepository(User::class)->findOneBy(['email' => 'admin@regeev.test']);
@@ -74,7 +80,7 @@ class ChargerDemoCommandTest extends KernelTestCase
 
         $this->commande->execute([]);
         $this->commande->assertCommandIsSuccessful();
-        self::assertStringNotContainsString('rien à faire', $this->commande->getDisplay());
+        self::assertStringNotContainsString('rien à faire', $this->affichage());
 
         $recent = $this->em()->createQuery('SELECT COUNT(l.id) FROM '.Lot::class.' l WHERE l.createdAt > :limite')
             ->setParameter('limite', new \DateTimeImmutable('-2 days'))
