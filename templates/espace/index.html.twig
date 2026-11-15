@@ -8,7 +8,11 @@
     {% if commerce %}
         <p class="text-muted">{{ commerce.adresse }}, {{ commerce.codePostal }} {{ commerce.ville }} · SIRET {{ commerce.siret }}</p>
 
-        <h2 class="h5 mt-4">Mes derniers lots</h2>
+        <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-2 gap-2">
+            <h2 class="h5 mb-0">Mes derniers lots</h2>
+            <a class="btn btn-regeev btn-sm" href="{{ path('app_lot_new') }}">+ Publier un lot</a>
+        </div>
+
         {% if lots is empty %}
             <p>Vous n'avez pas encore publié de lot.</p>
         {% else %}
@@ -18,11 +22,11 @@
                     <tbody>
                     {% for lot in lots %}
                         <tr>
-                            <td>{{ lot.titre }}</td>
+                            <td><a href="{{ path('app_lot_show', {id: lot.id}) }}">{{ lot.titre }}</a></td>
                             <td>{{ lot.categorie }}</td>
                             <td>{{ lot.poidsKg|number_format(1, ',', ' ') }} kg</td>
                             <td>{{ lot.dateLimite|date('d/m/Y') }}</td>
-                            <td><span class="badge text-bg-secondary">{{ lot.statut }}</span></td>
+                            <td>{{ include('_statut.html.twig', {statut: lot.statut}) }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -52,7 +56,7 @@
                             <td>{{ reservation.lot.commerce.nom }}</td>
                             <td>{{ reservation.dateReservation|date('d/m/Y H:i') }}</td>
                             <td><code>{{ reservation.codeRetrait }}</code></td>
-                            <td><span class="badge text-bg-secondary">{{ reservation.statut }}</span></td>
+                            <td>{{ include('_statut.html.twig', {statut: reservation.statut}) }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>

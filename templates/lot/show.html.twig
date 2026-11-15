@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ lot.titre }}{% endblock %}
+
+{% block body %}
+    <a class="small" href="{{ path('app_espace') }}">← Retour à mon espace</a>
+
+    <div class="d-flex flex-wrap align-items-center gap-2 mt-2 mb-3">
+        <h1 class="h3 mb-0">{{ lot.titre }}</h1>
+        {{ include('_statut.html.twig', {statut: lot.statut}) }}
+    </div>
+
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="card"><div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Catégorie</dt>
+                    <dd class="col-sm-7">{{ lot.categorie }}</dd>
+                    <dt class="col-sm-5">Quantité</dt>
+                    <dd class="col-sm-7">{{ lot.quantite|number_format(1, ',', ' ') }} {{ lot.unite }}</dd>
+                    <dt class="col-sm-5">Poids estimé</dt>
+                    <dd class="col-sm-7">{{ lot.poidsKg|number_format(1, ',', ' ') }} kg</dd>
+                    <dt class="col-sm-5">Date limite</dt>
+                    <dd class="col-sm-7">{{ lot.dateLimite|date('d/m/Y') }}</dd>
+                    <dt class="col-sm-5">Créneau de retrait</dt>
+                    <dd class="col-sm-7">{{ lot.retraitDebut|date('d/m/Y H:i') }} → {{ lot.retraitFin|date('H:i') }}</dd>
+                    {% if lot.description %}
+                        <dt class="col-sm-5">Description</dt>
+                        <dd class="col-sm-7">{{ lot.description }}</dd>
+                    {% endif %}
+                </dl>
+            </div></div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card"><div class="card-body">
+                <h2 class="h6">Actions</h2>
+
+                {% if lot.statut == 'brouillon' %}
+                    <p class="text-muted small">Ce lot n'est pas encore visible des associations.</p>
+                    <form method="post" action="{{ path('app_lot_publish', {id: lot.id}) }}" class="mb-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('lot' ~ lot.id) }}">
+                        <button class="btn btn-regeev w-100" type="submit">Publier le lot</button>
+                    </form>
+                    <a class="btn btn-outline-secondary w-100 mb-2" href="{{ path('app_lot_edit', {id: lot.id}) }}">Modifier</a>
+                {% elseif lot.statut == 'publie' %}
+                    <p class="text-muted small">En attente de réservation par une association.</p>
+                {% elseif lot.statut == 'reserve' and reservation %}
+                    <p class="small">
+                        Réservé par <strong>{{ reservation.association.nom }}</strong>
+                        le {{ reservation.dateReservation|date('d/m/Y à H:i') }}.
+                    </p>
+                    <form method="post" action="{{ path('app_lot_pickup', {id: lot.id}) }}" class="mb-2">
+                        <input type="hidden" name="_token" value="{{ csrf_token('lot' ~ lot.id) }}">
+                        <label class="form-label" for="code">Code présenté par l'association</label>
+                        <input class="form-control mb-2 text-uppercase" type="text" id="code" name="code" maxlength="6" autocomplete="off" required>
+                        <button class="btn btn-regeev w-100" type="submit">Confirmer le retrait</button>
+                    </form>
+                {% else %}
+                    <p class="text-muted small mb-0">Aucune action possible sur ce lot.</p>
+                {% endif %}
+
+                {% if lot.statut in ['brouillon', 'publie', 'reserve'] %}
+                    <form method="post" action="{{ path('app_lot_cancel', {id: lot.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('lot' ~ lot.id) }}">
+                        <button class="btn btn-outline-danger w-100" type="submit">Annuler le lot</button>
+                    </form>
+                {% endif %}
+            </div></div>
+        </div>
+    </div>
+{% endblock %}

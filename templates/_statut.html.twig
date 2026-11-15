@@ -1,0 +1,14 @@
+{# Affiche un statut (de lot ou de réservation) sous forme de badge lisible #}
+{% set libelles = {
+    brouillon: ['Brouillon', 'secondary'],
+    publie: ['Publié', 'primary'],
+    reserve: ['Réservé', 'warning'],
+    recupere: ['Récupéré', 'success'],
+    expire: ['Expiré', 'dark'],
+    annule: ['Annulé', 'danger'],
+    active: ['En cours', 'warning'],
+    recuperee: ['Récupérée', 'success'],
+    annulee: ['Annulée', 'danger'],
+} %}
+{% set libelle = libelles[statut] ?? [statut, 'secondary'] %}
+<span class="badge text-bg-{{ libelle[1] }}">{{ libelle[0] }}</span>
