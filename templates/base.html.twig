@@ -24,6 +24,9 @@
         <div class="collapse navbar-collapse" id="menu">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{{ path('app_impact') }}">Notre impact</a></li>
+                {% if is_granted('ROLE_ASSOCIATION') %}
+                    <li class="nav-item"><a class="nav-link" href="{{ path('app_catalogue') }}">Lots disponibles</a></li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav">
                 {% if app.user %}
