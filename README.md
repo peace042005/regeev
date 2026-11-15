@@ -17,7 +17,7 @@ analyse du besoin, conception, développement, tests, intégration continue et d
 - Cycle de vie d'un lot géré par une machine à états : brouillon, publié, réservé, récupéré, expiré, annulé.
 - Espace commerce : création d'un lot en brouillon, modification, publication, annulation, confirmation du retrait avec le code.
 - Droits d'accès par Voter : un commerce ne gère que ses propres lots.
-- Réservation avec code de retrait à présenter au commerce.
+- Espace association : lots disponibles filtrables par catégorie et par ville, réservation avec code de retrait, désistement.
 - Expiration automatique des lots périmés (`php bin/console app:lots:expirer`).
 - Tableau de bord d'impact public : kilos sauvés, repas équivalents, évolution par mois, répartition par catégorie et par ville.
 - Données d'impact disponibles en JSON (`/api/stats`) et en CSV (`/impact/export.csv`).
@@ -115,7 +115,8 @@ J'ai écrit trois niveaux de tests :
 - [x] Tests automatisés et pipeline CI/CD
 - [x] Gestion des lots côté commerce : création, modification, publication, annulation, confirmation du retrait
 - [ ] Géocodage des adresses
-- [ ] Liste, carte et réservation côté association
+- [x] Côté association : liste filtrable des lots disponibles, réservation avec code de retrait, désistement
+- [ ] Carte des lots
 - [ ] E-mails de notification
 - [ ] Administration (validation des associations)
 - [ ] Mise en ligne

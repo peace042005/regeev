@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ lot.titre }}{% endblock %}
+
+{% block body %}
+    <a class="small" href="{{ path('app_catalogue') }}">← Retour aux lots disponibles</a>
+
+    <h1 class="h3 mt-2 mb-3">{{ lot.titre }}</h1>
+
+    <div class="row g-3">
+        <div class="col-lg-7">
+            <div class="card"><div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Catégorie</dt>
+                    <dd class="col-sm-7">{{ lot.categorie }}</dd>
+                    <dt class="col-sm-5">Quantité</dt>
+                    <dd class="col-sm-7">{{ lot.quantite|number_format(1, ',', ' ') }} {{ lot.unite }}</dd>
+                    <dt class="col-sm-5">Poids estimé</dt>
+                    <dd class="col-sm-7">{{ lot.poidsKg|number_format(1, ',', ' ') }} kg</dd>
+                    <dt class="col-sm-5">À consommer avant le</dt>
+                    <dd class="col-sm-7">{{ lot.dateLimite|date('d/m/Y') }}</dd>
+                    {% if lot.description %}
+                        <dt class="col-sm-5">Description</dt>
+                        <dd class="col-sm-7">{{ lot.description }}</dd>
+                    {% endif %}
+                </dl>
+            </div></div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card"><div class="card-body">
+                <h2 class="h6">Retrait</h2>
+                <p class="mb-1"><strong>{{ lot.commerce.nom }}</strong></p>
+                <p class="small text-muted mb-2">{{ lot.commerce.adresse }}, {{ lot.commerce.codePostal }} {{ lot.commerce.ville }}</p>
+                <p class="small">
+                    Le {{ lot.retraitDebut|date('d/m/Y') }} de {{ lot.retraitDebut|date('H:i') }} à {{ lot.retraitFin|date('H:i') }}
+                </p>
+
+                {% if association.validated %}
+                    <form method="post" action="{{ path('app_catalogue_reserve', {id: lot.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reserver' ~ lot.id) }}">
+                        <button class="btn btn-regeev w-100" type="submit">Réserver ce lot</button>
+                    </form>
+                    <p class="small text-muted mt-2 mb-0">Vous recevrez un code de retrait à présenter au commerce.</p>
+                {% else %}
+                    <p class="small text-muted mb-0">Vous pourrez réserver dès que votre association sera validée.</p>
+                {% endif %}
+            </div></div>
+        </div>
+    </div>
+{% endblock %}

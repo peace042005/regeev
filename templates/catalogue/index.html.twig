@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lots disponibles{% endblock %}
+
+{% block body %}
+    <h1 class="h3 mb-3">Lots disponibles</h1>
+
+    {% if not association.validated %}
+        <div class="alert alert-warning" role="alert">
+            Votre association est en attente de validation : vous pouvez consulter les lots, mais pas encore les réserver.
+        </div>
+    {% endif %}
+
+    <form method="get" action="{{ path('app_catalogue') }}" class="row g-2 align-items-end mb-4">
+        <div class="col-sm-4">
+            <label class="form-label" for="categorie">Catégorie</label>
+            <select class="form-select" id="categorie" name="categorie">
+                <option value="">Toutes</option>
+                {% for categorie in categories %}
+                    <option value="{{ categorie.id }}" {{ filtres.categorie == categorie.id ? 'selected' }}>{{ categorie.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <label class="form-label" for="ville">Ville</label>
+            <select class="form-select" id="ville" name="ville">
+                <option value="">Toutes</option>
+                {% for ville in villes %}
+                    <option value="{{ ville }}" {{ filtres.ville == ville ? 'selected' }}>{{ ville }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-sm-4 d-flex gap-2">
+            <button class="btn btn-regeev" type="submit">Filtrer</button>
+            <a class="btn btn-outline-secondary" href="{{ path('app_catalogue') }}">Réinitialiser</a>
+        </div>
+    </form>
+
+    <p class="text-muted" data-test="nb-lots">{{ lots|length }} lot(s) disponible(s)</p>
+
+    {% if lots is empty %}
+        <p>Aucun lot ne correspond à votre recherche pour le moment.</p>
+    {% else %}
+        <div class="row g-3">
+            {% for lot in lots %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 lot-card">
+                        <div class="card-body d-flex flex-column">
+                            <span class="badge text-bg-light border align-self-start mb-2">{{ lot.categorie }}</span>
+                            <h2 class="h6">{{ lot.titre }}</h2>
+                            <p class="small text-muted mb-2">{{ lot.commerce.nom }} · {{ lot.commerce.ville }}</p>
+                            <ul class="list-unstyled small mb-3">
+                                <li>{{ lot.quantite|number_format(1, ',', ' ') }} {{ lot.unite }} (≈ {{ lot.poidsKg|number_format(1, ',', ' ') }} kg)</li>
+                                <li>À consommer avant le {{ lot.dateLimite|date('d/m/Y') }}</li>
+                                <li>Retrait le {{ lot.retraitDebut|date('d/m/Y') }} de {{ lot.retraitDebut|date('H:i') }} à {{ lot.retraitFin|date('H:i') }}</li>
+                            </ul>
+                            <a class="btn btn-outline-success btn-sm mt-auto" href="{{ path('app_catalogue_show', {id: lot.id}) }}">Voir le lot</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
