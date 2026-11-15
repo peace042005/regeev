@@ -1,0 +1,18 @@
+# Description de l'hébergement sur Render (Blueprint).
+# La base PostgreSQL est hébergée chez Neon : son adresse est saisie à la main dans Render.
+services:
+  - type: web
+    name: regeev
+    runtime: docker
+    plan: free
+    region: frankfurt
+    healthCheckPath: /connexion
+    # Le déploiement est déclenché par le pipeline GitHub Actions, une fois les tests passés
+    autoDeploy: false
+    envVars:
+      - key: APP_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: LOAD_DEMO_DATA
+        value: "1"

@@ -12,6 +12,7 @@ COPY docker/apache.conf /etc/apache2/sites-available/000-default.conf
 
 ENV APP_ENV=prod \
     APP_DEBUG=0 \
+    TRUSTED_PROXIES=REMOTE_ADDR \
     COMPOSER_ALLOW_SUPERUSER=1
 
 WORKDIR /var/www/html
